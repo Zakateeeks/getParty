@@ -1,9 +1,8 @@
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.function.BiConsumer;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Update;
+
 
 /**
  * Класс отвечает за конфигурацию бота
@@ -11,43 +10,52 @@ import java.util.function.BiConsumer;
  * @author Цымбал Александр
  */
 public class telegramBotConfigure extends TelegramLongPollingBot {
-
-    public BiConsumer<Long, String> handler;
-
     /**
      * Метод реагирует на обновления бота
      */
     @Override
     public void onUpdateReceived(Update update) {
-        telegramBotHandlers th = new telegramBotHandlers();
+        telegramBotHandlers handler = new telegramBotHandlers();
+
         if (update.hasMessage() && update.getMessage().isCommand()) {
             String command = update.getMessage().getText();
             Long chatId = update.getMessage().getChatId();
             String userName = update.getMessage().getFrom().getUserName();
-            handler = th.commandHandlers.get(command);
-            if (handler != null) {
-                handler.accept(chatId, userName);
-            }
+
+            handler.textCommand(chatId, command);
+        }
+
+        if (update.hasCallbackQuery()) {
+            CallbackQuery callbackQuery = update.getCallbackQuery();
+            String callbackData = callbackQuery.getData();
+            Long chatId = callbackQuery.getMessage().getChatId();
+
+            handler.commandHandlers.get(callbackData).accept(chatId,callbackData);
+
+            //потом в handlers пишем уникальную функцию-обработчик для каждой callBack, тк у нас уже здесь есть
+            //экземпляр handler просто отсюда ее вызываем, но нужно будет присрать опять hashMap как в самой первой версии
         }
     }
 
     /**
      * Метод для получения имени бота
+     *
      * @return никнейм бота в телеграм
      */
     @Override
     public String getBotUsername() {
 
-        return "getParty_bot";
+        return System.getenv("BOT_NAME");
     }
 
     /**
      * Метод для получения токена бота
+     *
      * @return токен бота в телеграм
      */
     @Override
     public String getBotToken() {
 
-        return "6449322906:AAGnDwAJx75skLFyu4hdQVXabN1pWMPst2o";
+        return System.getenv("BOT_TOKEN");
     }
 }

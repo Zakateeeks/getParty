@@ -1,5 +1,7 @@
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -15,63 +17,53 @@ import java.util.function.BiConsumer;
  *
  * @author Свечников Дмитрий
  */
-public class telegramBotHandlers extends telegramBotConfigure{
+public class telegramBotHandlers extends telegramBotConfigure {
 
-    public static Map<String, BiConsumer<Long, String>> commandHandlers = new HashMap<>();
+    public Map<String, BiConsumer<Long, String>> commandHandlers = new HashMap<>();
 
     public telegramBotHandlers() {
-            commandHandlers.put("/help", this::handleHelpCommand);
-            commandHandlers.put("/about", this::handleAboutCommand);
-            commandHandlers.put("/dev", this::handleDevCommand);
-            commandHandlers.put("/start", this::handleStartCommand);
-    }
-    private void handleHelpCommand(Long chatId, String userName) {
-        String helpText = "Привет, " + userName + "! Это команда /help.";
-        sendTextMessage(chatId, helpText);
+        commandHandlers.put("registration", this::textCommand);
+        commandHandlers.put("member", this::member);
+        commandHandlers.put("organizer", this::textCommand);
     }
 
-    private void handleAboutCommand(Long chatId, String userName) {
-        String aboutText = "Привет, " + userName + "! Это команда /about.";
-        sendTextMessage(chatId, aboutText);
-    }
 
-    private void handleDevCommand(Long chatId, String userName) {
-        String aboutText = "Привет, " + userName + "! Это команда /dev.";
-        sendTextMessage(chatId, aboutText);
-    }
+    public void textCommand(Long chatId, String nameCommand) {
+        telegramBotCommand newCommand = new telegramBotCommand(nameCommand);
+        List<InlineKeyboardButton> inlineButtons = newCommand.getButtonsList();
 
-    private void handleStartCommand(Long chatId, String userName) {
-        String aboutText = "Привет, " + userName + "! Это бот, который в дальнейшем обретёт пользу, но пока можешь просто потыкать на кнопочки.";
-        sendTextMessage(chatId, aboutText);
-    }
-
-    public void sendTextMessage(Long chatId, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        message.setText(text);
+        message.setText(newCommand.getCommandText());
 
 
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        List<KeyboardRow> keyboard = new ArrayList<>();
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
 
-        String[] commandTexts = {"/help", "/about?", "/dev"};
-
-        for (String commandText : commandTexts) {
-            KeyboardRow row = new KeyboardRow();
-            row.add(new KeyboardButton(commandText));
-            keyboard.add(row);
+        if (inlineButtons != null && !inlineButtons.isEmpty()) {
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            row.addAll(inlineButtons);
+            keyboardRows.add(row);
         }
 
-        keyboardMarkup.setKeyboard(keyboard);
-        message.setReplyMarkup(keyboardMarkup);
+        inlineKeyboardMarkup.setKeyboard(keyboardRows);
+        message.setReplyMarkup(inlineKeyboardMarkup);
 
         try {
             execute(message);
         } catch (TelegramApiException e) {
             e.printStackTrace();
-
         }
     }
 
-
+    public void member(Long chatId, String S){
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText("Введите имя");
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
 }
