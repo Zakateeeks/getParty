@@ -11,7 +11,6 @@ public class telegramBotCommand {
     private final String pathTextFile = "src/main/JSONFiles/TextCommands.json";
     private String textToSend;
     private List<InlineKeyboardButton> buttons = new ArrayList<>();
-
     public telegramBotCommand(String command) {
 
         try (FileReader reader = new FileReader(pathTextFile)) {
