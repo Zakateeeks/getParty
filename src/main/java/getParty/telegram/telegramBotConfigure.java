@@ -32,8 +32,6 @@ public class telegramBotConfigure extends TelegramLongPollingBot {
 
             handler.commandHandlers.get(callbackData).accept(chatId,callbackData);
 
-            //потом в handlers пишем уникальную функцию-обработчик для каждой callBack, тк у нас уже здесь есть
-            //экземпляр handler просто отсюда ее вызываем, но нужно будет присрать опять hashMap как в самой первой версии
         }
     }
 

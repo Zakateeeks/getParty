@@ -1,9 +1,6 @@
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
@@ -15,7 +12,7 @@ import java.util.function.BiConsumer;
 /**
  * Класс предназначен для обработки команд
  *
- * @author Свечников Дмитрий
+ * @author Свечников Дмитрий и Цымбал Александр
  */
 public class telegramBotHandlers extends telegramBotConfigure {
 
@@ -33,8 +30,9 @@ public class telegramBotHandlers extends telegramBotConfigure {
         List<InlineKeyboardButton> inlineButtons = newCommand.getButtonsList();
 
         SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText(newCommand.getCommandText());
+                message.enableMarkdown(true);
+                message.setChatId(chatId);
+                message.setText(newCommand.getCommandText());
 
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
