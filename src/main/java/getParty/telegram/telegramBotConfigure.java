@@ -20,18 +20,20 @@ public class telegramBotConfigure extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().isCommand()) {
             String command = update.getMessage().getText();
             Long chatId = update.getMessage().getChatId();
-            String userName = update.getMessage().getFrom().getUserName();
 
             handler.textCommand(chatId, command);
         }
 
-        if (update.hasCallbackQuery()) {
+        else if (update.hasCallbackQuery()) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
             String callbackData = callbackQuery.getData();
             Long chatId = callbackQuery.getMessage().getChatId();
 
-            handler.commandHandlers.get(callbackData).accept(chatId,callbackData);
-
+            handler.commandHandlers.get(callbackData).accept(chatId, callbackData);
+        }
+        else{
+            telegramFSM fsm = new telegramFSM();
+            fsm.selectInfo(update.getMessage().getChatId(),fsm.getState(),update.getMessage().getText());
         }
     }
 

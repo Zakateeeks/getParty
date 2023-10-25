@@ -3,6 +3,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -17,11 +18,13 @@ import java.util.function.BiConsumer;
 public class telegramBotHandlers extends telegramBotConfigure {
 
     public Map<String, BiConsumer<Long, String>> commandHandlers = new HashMap<>();
+    telegramBotDatabase db = new telegramBotDatabase();
+    Connection conn = db.connectToDatabase("bot_users", "postgres", "1234");
 
     public telegramBotHandlers() {
         commandHandlers.put("registration", this::textCommand);
-        commandHandlers.put("member", this::member);
-        commandHandlers.put("organizer", this::textCommand);
+        commandHandlers.put("member", this::memberReg);
+        commandHandlers.put("organizer", this::organizerReg);
     }
 
 
@@ -54,12 +57,39 @@ public class telegramBotHandlers extends telegramBotConfigure {
         }
     }
 
-    public void member(Long chatId, String S){
+    public void memberReg(Long chatId, String S){
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        message.setText("Введите имя");
+
         try {
-            execute(message);
+            if (db.searchByChatID(conn, "users", chatId.toString(), "chatid") == "11") {
+                message.setText("Введите имя");
+                execute(message);
+                db.insertRow(conn, "users", "Участник", chatId.toString());
+            } else {
+                message.setText("Вы уже зарегистрированы");
+                execute(message);
+                textCommand(chatId, "menu$");
+            }
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void organizerReg(Long chatId, String S) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+
+        try {
+            if (db.searchByChatID(conn, "users", chatId.toString(), "chatid") == "11") {
+                message.setText("Введите имя");
+                execute(message);
+                db.insertRow(conn, "users", "Организатор", chatId.toString());
+            } else {
+                message.setText("Вы уже зарегистрированы");
+                execute(message);
+                textCommand(chatId, "menu$");
+            }
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
