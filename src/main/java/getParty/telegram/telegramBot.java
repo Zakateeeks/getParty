@@ -8,7 +8,8 @@ public class telegramBot {
     public static void main(String[] args) {
         telegramBotDatabase db = new telegramBotDatabase();
         Connection conn = db.connectToDatabase("bot_users", "postgres", "1234");
-        db.createTable(conn, "users");
+        db.createTableUsers(conn);
+        db.createTableEvent(conn);
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(new telegramBotConfigure());

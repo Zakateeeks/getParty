@@ -21,10 +21,10 @@ public class telegramBotDatabase {
         return conn;
     }
 
-    public void createTable(Connection conn,String tableName){
+    public void createTableUsers(Connection conn){
         Statement statement;
         try{
-            String query = "create table "+tableName+"(empid SERIAL,name varchar(200),role varchar(200),description varchar(200),chatID varchar(200),primary key(empid));";
+            String query = "create table users (empid SERIAL,name varchar(200),role varchar(200),description varchar(200),chatID varchar(200),primary key(empid));";
             statement= conn.createStatement();
             statement.executeUpdate(query);
             System.out.println("table create");
@@ -33,10 +33,34 @@ public class telegramBotDatabase {
         }
     }
 
-    public void insertRow(Connection conn,String tableName, String role, String chatID){
+    public void createTableEvent(Connection conn){
+        Statement statement;
+        try{
+            String query = "create table event (empid SERIAL,organizer varchar(200),eventname varchar(200),eventdesc varchar(200),chatID varchar(200),eventref varchar(200),eventdate varchar(200),id varchar(200),primary key(empid));";
+            statement= conn.createStatement();
+            statement.executeUpdate(query);
+            System.out.println("table create");
+        }catch(Exception e){
+            System.out.println("Create Error");
+        }
+    }
+
+    public void insertRowUsers(Connection conn,String tableName, String role, String chatID){
         Statement statement;
         try{
             String query = String.format("insert into %s(role,chatid) values('%s','%s')",tableName,role,chatID);
+            statement= conn.createStatement();
+            statement.executeUpdate(query);
+            System.out.println("Row create");
+        }catch(Exception e){
+            System.out.println("Row create Error");
+        }
+    }
+
+    public void insertRowEvent(Connection conn,String tableName, String organizer, String chatID){
+        Statement statement;
+        try{
+            String query = String.format("insert into %s(organizer,chatid) values('%s','%s')",tableName,organizer,chatID);
             statement= conn.createStatement();
             statement.executeUpdate(query);
             System.out.println("Row create");
@@ -51,9 +75,9 @@ public class telegramBotDatabase {
             String query = String.format("update %s set %s='%s' where chatid='%s'",tableName,column,value,chatID);
             statement= conn.createStatement();
             statement.executeUpdate(query);
-            System.out.println("Row create");
+            System.out.println("update ok");
         }catch(Exception e){
-            System.out.println("Row create Error");
+            System.out.println("update Error");
         }
     }
     public String searchByChatID(Connection conn,String tableName, String chatID, String searchProduct){
