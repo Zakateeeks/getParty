@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 public class telegramBotDatabase {
     public Connection connectToDatabase(String dbname, String user, String pass) {
@@ -20,84 +17,94 @@ public class telegramBotDatabase {
         }
         return conn;
     }
+    public void createTable(Connection conn, String tableName, String tableStructure) {
+        String query = "CREATE TABLE ? (?)";
 
-    public void createTableUsers(Connection conn){
-        Statement statement;
-        try{
-            String query = "create table users (empid SERIAL,name varchar(200),role varchar(200),description varchar(200),chatID varchar(200),primary key(empid));";
-            statement= conn.createStatement();
-            statement.executeUpdate(query);
-            System.out.println("table create");
-        }catch(Exception e){
-            System.out.println("Create Error");
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, tableName);
+            preparedStatement.setString(2, tableStructure);
+
+            preparedStatement.executeUpdate();
+            System.out.println(tableName + " table created");
+        } catch (SQLException e) {
+            System.out.println("Create Error: " + e.getMessage());
         }
     }
 
-    public void createTableEvent(Connection conn){
-        Statement statement;
-        try{
-            String query = "create table event (empid SERIAL,organizer varchar(200),eventname varchar(200),eventdesc varchar(200),chatID varchar(200),eventref varchar(200),eventdate varchar(200),id varchar(200),primary key(empid));";
-            statement= conn.createStatement();
-            statement.executeUpdate(query);
-            System.out.println("table create");
-        }catch(Exception e){
-            System.out.println("Create Error");
+    public void insertRow(Connection conn, String tableName, String field1, String field2, String value1, String value2 ) {
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "insert into " + tableName + "("+field1+","+field2+") values (?, ?)";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, value1);
+            preparedStatement.setString(2, value2);
+            preparedStatement.executeUpdate();
+            System.out.println("Row created");
+        } catch (SQLException e) {
+            System.out.println("Row create Error: " + e.getMessage());
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void insertRowUsers(Connection conn,String tableName, String role, String chatID){
-        Statement statement;
-        try{
-            String query = String.format("insert into %s(role,chatid) values('%s','%s')",tableName,role,chatID);
-            statement= conn.createStatement();
-            statement.executeUpdate(query);
-            System.out.println("Row create");
-        }catch(Exception e){
-            System.out.println("Row create Error");
+    public void update(Connection conn, String tableName, String column, String value, String chatID) {
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "update " + tableName + " set " + column + " = ? where chatid = ?";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, value);
+            preparedStatement.setString(2, chatID);
+            preparedStatement.executeUpdate();
+            System.out.println("Update OK");
+        } catch (SQLException e) {
+            System.out.println("Update Error: " + e.getMessage());
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void insertRowEvent(Connection conn,String tableName, String organizer, String chatID){
-        Statement statement;
-        try{
-            String query = String.format("insert into %s(organizer,chatid) values('%s','%s')",tableName,organizer,chatID);
-            statement= conn.createStatement();
-            statement.executeUpdate(query);
-            System.out.println("Row create");
-        }catch(Exception e){
-            System.out.println("Row create Error");
-        }
-    }
 
-    public void update(Connection conn,String tableName, String column, String value,String chatID){
-        Statement statement;
-        try{
-            String query = String.format("update %s set %s='%s' where chatid='%s'",tableName,column,value,chatID);
-            statement= conn.createStatement();
-            statement.executeUpdate(query);
-            System.out.println("update ok");
-        }catch(Exception e){
-            System.out.println("update Error");
-        }
-    }
-    public String searchByChatID(Connection conn,String tableName, String chatID, String searchProduct){
-        Statement statement;
-        ResultSet rs=null;
-        try{
-            String query = String.format("select * from %s where chatid= '%s' ", tableName, chatID);
-            statement= conn.createStatement();
-            rs = statement.executeQuery(query);
+    public String searchByChatID(Connection conn, String tableName, String chatID, String searchProduct) {
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        try {
+            String query = "SELECT " + searchProduct + " FROM " + tableName + " WHERE chatid = ?";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, chatID);
+            rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
                 return rs.getString(searchProduct);
-            }else {
-                System.out.println("Пиздец");
+            } else {
+                System.out.println(":(");
                 return "11";
             }
-        }catch(Exception e){
+        } catch (SQLException e) {
+            e.printStackTrace();
             return "";
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
-
-
 }

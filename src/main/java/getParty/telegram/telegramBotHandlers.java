@@ -23,8 +23,8 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
     public telegramBotHandlers() {
         commandHandlers.put("registration", this::textCommand);
-        commandHandlers.put("member", this::memberReg);
-        commandHandlers.put("organizer", this::organizerReg);
+        commandHandlers.put("member", this::registration);
+        commandHandlers.put("organizer", this::registration);
         commandHandlers.put("create_event", this::createEvent);
     }
 
@@ -58,39 +58,25 @@ public class telegramBotHandlers extends telegramBotConfigure {
         }
     }
 
-    public void memberReg(Long chatId, String S){
+    public void registration(Long chatId, String S){
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         telegramFSM fsm = new telegramFSM();
         fsm.changeState("name");
         fsm.currentDB = "users";
 
+        System.out.println(S);
         try {
             if (db.searchByChatID(conn, "users", chatId.toString(), "chatid") == "11") {
+                String role;
                 message.setText("Введите имя");
                 execute(message);
-                db.insertRowUsers(conn, "users", "Участник", chatId.toString());
-            } else {
-                message.setText("Вы уже зарегистрированы");
-                execute(message);
-                textCommand(chatId, "menu$");
-            }
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void organizerReg(Long chatId, String S) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        telegramFSM fsm = new telegramFSM();
-        fsm.changeState("name");
-        fsm.currentDB = "users";
-        try {
-            if (db.searchByChatID(conn, "users", chatId.toString(), "chatid") == "11") {
-                message.setText("Введите имя");
-                execute(message);
-                db.insertRowUsers(conn, "users", "Организатор", chatId.toString());
+                if(S.equals("member")){
+                     role = "Участник";
+                }else{
+                     role = "Организатор";
+                }
+                db.insertRow(conn, "users", "role","chatid",role, chatId.toString());
             } else {
                 message.setText("Вы уже зарегистрированы");
                 execute(message);
@@ -111,7 +97,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
             String organizer = db.searchByChatID(conn, "users", chatId.toString(), "name");
             message.setText("Как называется Ваше мероприятие?");
             execute(message);
-            db.insertRowEvent(conn, "event", organizer, chatId.toString());
+            db.insertRow(conn, "event", "organizer","chatid",organizer, chatId.toString());
 
         } catch (TelegramApiException e) {
             e.printStackTrace();
