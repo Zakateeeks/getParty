@@ -1,6 +1,15 @@
 import java.sql.*;
 
+/**
+ * Класс отвечает за работу с базой данных
+ *
+ * @author Цымбал Александр
+ */
 public class telegramBotDatabase {
+
+    /**
+     * Коннект с базой данных
+     */
     public Connection connectToDatabase(String dbname, String user, String pass) {
         Connection conn=null;
         try{
@@ -17,6 +26,13 @@ public class telegramBotDatabase {
         }
         return conn;
     }
+
+    /**
+     * Создает новую таблицу в базе данных с указанным именем.
+     *
+     * @param tableName Имя таблицы, которую нужно создать.
+     * @param tableStructure Струкутра таблицы, задающая поля и их размеры
+     */
     public void createTable(Connection conn, String tableName, String tableStructure) {
         String query = "CREATE TABLE ? (?)";
 
@@ -31,6 +47,13 @@ public class telegramBotDatabase {
         }
     }
 
+    /**
+     * Создает строку в таблице с указанным именем.
+     *
+     * @param tableName Имя таблицы, в которую нужно добавить строку.
+     * @param field1 Имя поля в которые нужно добавить информаиию.
+     * @param value1 Информация которую нуцжно добавить в поле.
+     */
     public void insertRow(Connection conn, String tableName, String field1, String field2, String value1, String value2 ) {
         PreparedStatement preparedStatement = null;
         try {
@@ -53,6 +76,13 @@ public class telegramBotDatabase {
         }
     }
 
+    /**
+     * Добавляет инофрмацию в указаное поле с заданным chatid
+     *
+     * @param tableName Имя таблицы, в которую нужно добавить информацию.
+     * @param column Поле в которое нужно добавить информацию.
+     * @param value Значение, которое будет добавлено в данное поле
+     */
     public void update(Connection conn, String tableName, String column, String value, String chatID) {
         PreparedStatement preparedStatement = null;
         try {
@@ -75,7 +105,12 @@ public class telegramBotDatabase {
         }
     }
 
-
+    /**
+     * Поиск информации в указанном поле с заданным chatid
+     *
+     * @param tableName Имя таблицы, в которую нужно добавить информацию.
+     * @param searchProduct Поле, в котором ищется инофрмация.
+     */
     public String searchByChatID(Connection conn, String tableName, String chatID, String searchProduct) {
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
