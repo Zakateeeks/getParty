@@ -76,5 +76,9 @@
         "callBackData": "create_event"
       }
     }
+  },
+  "incorrectInput$":{
+    "text" :"Введите данные корректно",
+    "inlineButtons": false
   }
 }

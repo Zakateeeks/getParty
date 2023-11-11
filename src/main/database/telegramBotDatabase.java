@@ -34,13 +34,12 @@ public class telegramBotDatabase {
      * @param tableStructure Струкутра таблицы, задающая поля и их размеры
      */
     public void createTable(Connection conn, String tableName, String tableStructure) {
-        String query = "CREATE TABLE ? (?)";
+        String query = "CREATE TABLE "+tableName+" ("+tableStructure+")";
 
-        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setString(1, tableName);
-            preparedStatement.setString(2, tableStructure);
-
-            preparedStatement.executeUpdate();
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.executeUpdate();
+            ps.close();
             System.out.println(tableName + " table created");
         } catch (SQLException e) {
             System.out.println("Create Error: " + e.getMessage());
@@ -56,14 +55,21 @@ public class telegramBotDatabase {
      */
     public void insertRow(Connection conn, String tableName, String field1, String field2, String value1, String value2 ) {
         PreparedStatement preparedStatement = null;
+        dataVerification verification = new dataVerification();
         try {
+            verification.verify(field1,value1);
+            verification.verify(field2,value2);
+
             String query = "insert into " + tableName + "("+field1+","+field2+") values (?, ?)";
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, value1);
             preparedStatement.setString(2, value2);
             preparedStatement.executeUpdate();
             System.out.println("Row created");
-        } catch (SQLException e) {
+        }catch (InvalidDatabaseEntryException e){
+            System.out.println(e.getMessage());
+        }
+        catch (SQLException e) {
             System.out.println("Row create Error: " + e.getMessage());
         } finally {
             try {
@@ -83,9 +89,12 @@ public class telegramBotDatabase {
      * @param column Поле в которое нужно добавить информацию.
      * @param value Значение, которое будет добавлено в данное поле
      */
-    public void update(Connection conn, String tableName, String column, String value, String chatID) {
+    public void update(Connection conn, String tableName, String column, String value, String chatID) throws InvalidDatabaseEntryException {
         PreparedStatement preparedStatement = null;
+        dataVerification verification = new dataVerification();
         try {
+            verification.verify(column,value);
+
             String query = "update " + tableName + " set " + column + " = ? where chatid = ?";
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, value);
@@ -94,6 +103,9 @@ public class telegramBotDatabase {
             System.out.println("Update OK");
         } catch (SQLException e) {
             System.out.println("Update Error: " + e.getMessage());
+        } catch (InvalidDatabaseEntryException e){
+            System.out.println(e.getMessage());
+            throw new InvalidDatabaseEntryException("Данные не корректны");
         } finally {
             try {
                 if (preparedStatement != null) {

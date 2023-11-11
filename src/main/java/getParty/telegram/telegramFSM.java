@@ -25,10 +25,16 @@ public class telegramFSM {
     }
 
     public void selectInfo(Long chatID,String column,String text){
+        try{
         db.update(conn,currentDB,column,text,chatID.toString());
         currentState = switchState.get(getState());
         System.out.println(currentState);
         handler.textCommand(chatID, getState()+'$');
+    }catch (InvalidDatabaseEntryException e){
+            System.out.println(e.getMessage());
+            handler.textCommand(chatID,"incorrectInput$");
+            handler.textCommand(chatID,getState()+'$');
+        }
     }
 
     public void changeState(String state){
