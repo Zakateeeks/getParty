@@ -94,8 +94,12 @@ public class telegramBotDatabase {
         dataVerification verification = new dataVerification();
         try {
             verification.verify(column,value);
-
-            String query = "update " + tableName + " set " + column + " = ? where chatid = ?";
+            String query;
+            if (tableName.equals("users")) {
+                query = "update " + tableName + " set " + column + " = ? where chatid = ?";
+            } else {
+                query = "update " + tableName + " set " + column + " = ? where id = ?";
+            }
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, value);
             preparedStatement.setString(2, chatID);
@@ -153,5 +157,35 @@ public class telegramBotDatabase {
                 e.printStackTrace();
             }
         }
+    }
+
+    public String[] viewRow(Connection conn, String tableName, int empid) {
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        try {
+            String query = "SELECT * FROM " + tableName + " WHERE empid = CAST(? AS INTEGER)";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, Integer.toString(empid));
+            rs = preparedStatement.executeQuery();
+
+            if (rs.next()) {
+                return new String[]{rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8)};
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new String[]{};
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }

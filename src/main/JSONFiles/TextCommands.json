@@ -69,11 +69,11 @@
       "count": 2,
       "b1": {
         "butText": "Список мероприятий",
-        "callBackData": "event_list"
+        "callBackData": "eventList"
       },
       "b2": {
         "butText": "Создать мероприятие",
-        "callBackData": "create_event"
+        "callBackData": "createEvent"
       }
     }
   },

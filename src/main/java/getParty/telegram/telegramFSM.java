@@ -18,6 +18,7 @@ public class telegramFSM {
         switchState.put("eventdesc","eventdate");
         switchState.put("eventdate","eventref");
         switchState.put("eventref","complete");
+        switchState.put("complete", "menu");
     }
 
     public String getState(){

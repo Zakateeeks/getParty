@@ -1,4 +1,5 @@
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -25,7 +26,8 @@ public class telegramBotHandlers extends telegramBotConfigure {
         commandHandlers.put("registration", this::textCommand);
         commandHandlers.put("member", this::registration);
         commandHandlers.put("organizer", this::registration);
-        commandHandlers.put("create_event", this::createEvent);
+        commandHandlers.put("createEvent", this::createEvent);
+        commandHandlers.put("eventList", this::eventList);
     }
 
 
@@ -103,4 +105,19 @@ public class telegramBotHandlers extends telegramBotConfigure {
             e.printStackTrace();
         }
     }
+
+    public void eventList(Long chatId, String S) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+
+        try {
+            String[] eventRow = db.viewRow(conn, "event", 1);
+            message.setText(eventRow[2] + "\n\n" + "*Организатор:* " + eventRow[1] + "\n\n" + eventRow[3] + "\n\n*Дата и время:* " + eventRow[6]);
+            message.enableMarkdown(true);
+            execute(message);
+        } catch (TelegramApiException e){
+            e.printStackTrace();
+        }
+    }
 }
+
