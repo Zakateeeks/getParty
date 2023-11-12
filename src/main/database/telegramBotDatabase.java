@@ -188,4 +188,20 @@ public class telegramBotDatabase {
         }
         return null;
     }
+
+    public int countRow(Connection conn, String tableName){
+        PreparedStatement preparedStatement = null;
+        ResultSet rs;
+        try {
+            String query = "SELECT COUNT(*) FROM "+tableName;
+            preparedStatement = conn.prepareStatement(query);
+            rs = preparedStatement.executeQuery();
+            rs.next();
+            return rs.getInt(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }

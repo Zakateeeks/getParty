@@ -21,6 +21,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
     public Map<String, BiConsumer<Long, String>> commandHandlers = new HashMap<>();
     telegramBotDatabase db = new telegramBotDatabase();
     Connection conn = db.connectToDatabase("bot_users", "postgres", "1234");
+    private static int currentEmpid = 1;
 
     public telegramBotHandlers() {
         commandHandlers.put("registration", this::textCommand);
@@ -28,6 +29,8 @@ public class telegramBotHandlers extends telegramBotConfigure {
         commandHandlers.put("organizer", this::registration);
         commandHandlers.put("createEvent", this::createEvent);
         commandHandlers.put("eventList", this::eventList);
+        commandHandlers.put("empidPlus", this::empidPlus);
+        commandHandlers.put("empidMinus", this::empidMinus);
     }
 
 
@@ -107,17 +110,48 @@ public class telegramBotHandlers extends telegramBotConfigure {
     }
 
     public void eventList(Long chatId, String S) {
+        telegramBotCommand newCommand;
+        if (currentEmpid==1) {
+            newCommand = new telegramBotCommand("first$");
+        }else if(currentEmpid == db.countRow(conn,"event")){
+            newCommand = new telegramBotCommand("last$");
+        }else{
+            newCommand = new telegramBotCommand("midle$");
+        }
+        List<InlineKeyboardButton> inlineButtons = newCommand.getButtonsList();
+
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
 
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
+
+        if (inlineButtons != null && !inlineButtons.isEmpty()) {
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            row.addAll(inlineButtons);
+            keyboardRows.add(row);
+        }
+
+        inlineKeyboardMarkup.setKeyboard(keyboardRows);
+        message.setReplyMarkup(inlineKeyboardMarkup);
+
         try {
-            String[] eventRow = db.viewRow(conn, "event", 1);
+            String[] eventRow = db.viewRow(conn, "event", currentEmpid);
             message.setText(eventRow[2] + "\n\n" + "*Организатор:* " + eventRow[1] + "\n\n" + eventRow[3] + "\n\n*Дата и время:* " + eventRow[6]);
             message.enableMarkdown(true);
             execute(message);
         } catch (TelegramApiException e){
             e.printStackTrace();
         }
+    }
+
+    public void empidPlus(Long chatId, String S){
+        currentEmpid++;
+        eventList(chatId,S);
+    }
+    public void empidMinus(Long chatId, String S){
+        currentEmpid--;
+        eventList(chatId,S);
     }
 }
 

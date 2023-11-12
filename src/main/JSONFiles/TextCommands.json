@@ -80,5 +80,54 @@
   "incorrectInput$":{
     "text" :"Введите данные корректно",
     "inlineButtons": false
+  },
+  "first$": {
+    "text" :"",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "Записаться",
+        "callBackData": "sign"
+      },
+      "b2": {
+        "butText": "-->",
+        "callBackData": "empidPlus"
+      }
+    }
+  },
+  "last$": {
+    "text" :"",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "<--",
+        "callBackData": "empidMinus"
+      },
+      "b2": {
+        "butText": "Записаться",
+        "callBackData": "sign"
+      }
+    }
+  },
+  "midle$": {
+    "text" :"",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 3,
+      "b1": {
+        "butText": "<--",
+        "callBackData": "empidMinus"
+      },
+      "b2": {
+        "butText": "Записаться",
+        "callBackData": "sign"
+      },
+      "b3": {
+        "butText": "-->",
+        "callBackData": "empidPlus"
+      }
+    }
   }
 }
