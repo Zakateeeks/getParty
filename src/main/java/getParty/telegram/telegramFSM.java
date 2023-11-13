@@ -18,7 +18,6 @@ public class telegramFSM {
         switchState.put("eventdesc","eventdate");
         switchState.put("eventdate","eventref");
         switchState.put("eventref","complete");
-        switchState.put("complete", "menu");
     }
 
     public String getState(){
@@ -29,7 +28,7 @@ public class telegramFSM {
         try{
         db.update(conn,currentDB,column,text,chatID.toString());
         currentState = switchState.get(getState());
-        System.out.println(currentState);
+        System.out.println("1"+currentState+"1");
         handler.textCommand(chatID, getState()+'$');
     }catch (InvalidDatabaseEntryException e){
             System.out.println(e.getMessage());
@@ -41,6 +40,4 @@ public class telegramFSM {
     public void changeState(String state){
         currentState = state;
     }
-
-
 }

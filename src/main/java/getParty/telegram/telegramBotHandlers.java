@@ -31,6 +31,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
         commandHandlers.put("eventList", this::eventList);
         commandHandlers.put("empidPlus", this::empidPlus);
         commandHandlers.put("empidMinus", this::empidMinus);
+        commandHandlers.put("menu", this::toMenu);
     }
 
 
@@ -153,5 +154,10 @@ public class telegramBotHandlers extends telegramBotConfigure {
         currentEmpid--;
         eventList(chatId,S);
     }
+
+    public void toMenu(Long chatId, String S){
+        textCommand(chatId,"menu$");
+    }
+
 }
 

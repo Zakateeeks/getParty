@@ -98,11 +98,12 @@ public class telegramBotDatabase {
             if (tableName.equals("users")) {
                 query = "update " + tableName + " set " + column + " = ? where chatid = ?";
             } else {
-                query = "update " + tableName + " set " + column + " = ? where id = ?";
+                query = "update " + tableName + " set " + column + " = ? where chatid = ? and empid = (select max(empid) from " + tableName + " where chatid = ?)";
             }
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, value);
             preparedStatement.setString(2, chatID);
+            preparedStatement.setString(3, chatID);
             preparedStatement.executeUpdate();
             System.out.println("Update OK");
         } catch (SQLException e) {
