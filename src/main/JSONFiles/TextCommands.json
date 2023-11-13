@@ -81,6 +81,14 @@
     "text" :"Введите данные корректно",
     "inlineButtons": false
   },
+  "name$":{
+    "text" :"Введите имя",
+    "inlineButtons": false
+  },
+  "eventname$":{
+    "text" :"Как называется Ваше мероприятие?",
+    "inlineButtons": false
+  },
   "first$": {
     "text" :"",
     "inlineButtons": true,

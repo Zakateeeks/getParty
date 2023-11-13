@@ -33,8 +33,7 @@ public class dataVerification {
      */
     public void verify(String column, String value) throws InvalidDatabaseEntryException{
         if (!(Pattern.matches(literal.get(column),value))){
-            System.out.println(literal.get(column));
-            throw new InvalidDatabaseEntryException("данные не корректны");
+            throw new InvalidDatabaseEntryException("Данные не корректны");
         }
     }
 }
