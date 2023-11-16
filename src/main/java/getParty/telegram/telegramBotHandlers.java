@@ -32,6 +32,8 @@ public class telegramBotHandlers extends telegramBotConfigure {
         commandHandlers.put("empidPlus", this::empidPlus);
         commandHandlers.put("empidMinus", this::empidMinus);
         commandHandlers.put("menu", this::toMenu);
+        commandHandlers.put("viewProfile", this::viewProfile);
+        commandHandlers.put("createdEventList", this::viewCreatedList);
     }
 
 
@@ -137,12 +139,59 @@ public class telegramBotHandlers extends telegramBotConfigure {
         message.setReplyMarkup(inlineKeyboardMarkup);
 
         try {
-            String[] eventRow = db.viewRow(conn, "event", currentEmpid);
+            String[] eventRow = db.viewRowEvent(conn, "event", currentEmpid);
             message.setText(eventRow[2] + "\n\n" + "*Организатор:* " + eventRow[1] + "\n\n" + eventRow[3] + "\n\n*Дата и время:* " + eventRow[6]);
             message.enableMarkdown(true);
             execute(message);
         } catch (TelegramApiException e){
             e.printStackTrace();
+        }
+    }
+
+    public void viewProfile(Long chatId, String S){
+        telegramBotCommand newCommand =new telegramBotCommand("profile$");;
+        List<InlineKeyboardButton> inlineButtons = newCommand.getButtonsList();
+
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
+
+        if (inlineButtons != null && !inlineButtons.isEmpty()) {
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            row.addAll(inlineButtons);
+            keyboardRows.add(row);
+        }
+
+        inlineKeyboardMarkup.setKeyboard(keyboardRows);
+        message.setReplyMarkup(inlineKeyboardMarkup);
+
+        try {
+            String[] eventRow = db.viewRowUsers(conn, "users", chatId.toString());
+            message.setText(eventRow[1] + "\n\n" + "*Ваша роль:* " + eventRow[2] + "\n\n" + eventRow[3]);
+            message.enableMarkdown(true);
+            execute(message);
+        } catch (TelegramApiException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void viewCreatedList(Long chatId,String S){
+        ArrayList<Integer> arrList = db.searchEvents(conn,"event",chatId.toString());
+
+        for(int i = 0; i<arrList.size(); i++) {
+            SendMessage message = new SendMessage();
+            message.setChatId(chatId);
+
+            try {
+                String[] eventRow = db.viewRowEvent(conn, "event", arrList.get(i));
+                message.setText(eventRow[2] + "\n\n" + "*Организатор:* " + eventRow[1] + "\n\n" + eventRow[3] + "\n\n*Дата и время:* " + eventRow[6]);
+                message.enableMarkdown(true);
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
         }
     }
 

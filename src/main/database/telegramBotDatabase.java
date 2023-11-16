@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  * Класс отвечает за работу с базой данных
@@ -160,7 +161,7 @@ public class telegramBotDatabase {
         }
     }
 
-    public String[] viewRow(Connection conn, String tableName, int empid) {
+    public String[] viewRowEvent(Connection conn, String tableName, int empid) {
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
         try {
@@ -188,6 +189,68 @@ public class telegramBotDatabase {
             }
         }
         return null;
+    }
+
+    public String[] viewRowUsers(Connection conn, String tableName, String chatId){
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        try {
+            String query = "SELECT * FROM " + tableName + " WHERE chatid = ?";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, chatId);
+            rs = preparedStatement.executeQuery();
+
+            if (rs.next()) {
+                return new String[]{rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)};
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new String[]{};
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<Integer> searchEvents(Connection conn, String tableName, String chatId){
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        try {
+            String query = "SELECT * FROM " + tableName + " WHERE chatid = ?";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, chatId);
+            rs = preparedStatement.executeQuery();
+
+            ArrayList<Integer> arrList = new ArrayList<>();
+            while (rs.next()) {
+                arrList.add(rs.getInt(1));
+            }
+            return arrList;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public int countRow(Connection conn, String tableName){

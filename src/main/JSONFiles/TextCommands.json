@@ -70,20 +70,41 @@
   },
 
   "menu$" : {
-    "text" :"Это пример меню",
+    "text" :"Вы можете посмотреть мероприятия, создать своё или посмотреть свой профиль",
     "inlineButtons": true,
     "buttons": {
-      "count": 2,
+      "count": 3,
       "b1": {
-        "butText": "Список мероприятий",
+        "butText": "Список",
         "callBackData": "eventList"
       },
       "b2": {
-        "butText": "Создать мероприятие",
+        "butText": "Профиль",
+        "callBackData": "viewProfile"
+      },
+      "b3": {
+        "butText": "Создать",
         "callBackData": "createEvent"
       }
     }
   },
+
+  "profile$" : {
+    "text" :"",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "Созданные",
+        "callBackData": "createdEventList"
+      },
+      "b2": {
+        "butText": "Записанные",
+        "callBackData": "signedEventList"
+      }
+    }
+  },
+
   "incorrectInput$":{
     "text" :"Введите данные корректно",
     "inlineButtons": false
