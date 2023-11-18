@@ -21,6 +21,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
     telegramBotDatabase db = new telegramBotDatabase();
     Connection conn = db.connectToDatabase("bot_users", "postgres", "1234");
     private static int currentEmpid = 1;
+    private static int current_Empid = 0;
 
     public telegramBotHandlers() {
         commandHandlers.put("registration", this::textCommand);
@@ -184,14 +185,18 @@ public class telegramBotHandlers extends telegramBotConfigure {
         ArrayList<Integer> arrList = db.searchEvents(conn,"event",chatId.toString());
         telegramBotCommand newCommand;
 
-        if (currentEmpid == arrList.get(0)) {
+        if (current_Empid == arrList.get(0)) {
             newCommand = new telegramBotCommand("firstMyEvent$");
-        } else if(currentEmpid == arrList.get(arrList.size() - 1)){
+        } else if(current_Empid == arrList.get(arrList.size() - 1)){
             newCommand = new telegramBotCommand("lastMyEvent$");
         } else if (arrList.size() == 1) {
-            currentEmpid = arrList.get(0);
+            current_Empid = arrList.get(0);
             newCommand = new telegramBotCommand("oneMyEvent$");
-        } else{
+        } else if (arrList.size() != 0 && current_Empid == 0) {
+            current_Empid = arrList.get(0);
+            newCommand = new telegramBotCommand("firstMyEvent$");
+
+        } else {
             newCommand = new telegramBotCommand("midleMyEvent$");
         }
 
@@ -214,7 +219,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
         message.setReplyMarkup(inlineKeyboardMarkup);
 
         try {
-            String[] eventRow = db.viewRowEvent(conn, "event", currentEmpid);
+            String[] eventRow = db.viewRowEvent(conn, "event", current_Empid);
             message.setText(eventRow[2] + "\n\n" + "*Организатор:* " + eventRow[1] + "\n\n" + eventRow[3] + "\n\n*Дата и время:* " + eventRow[6]);
             message.enableMarkdown(true);
             execute(message);
@@ -227,7 +232,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
 
-        db.deleteRow(conn, "event", currentEmpid);
+        db.deleteRow(conn, "event", current_Empid);
         try {
             message.setText("Мероприятие успешно удалено!");
             execute(message);
@@ -244,10 +249,10 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
     public void nextElem(Long chatId, String S) {
         ArrayList<Integer> arrList = db.searchEvents(conn, "event", chatId.toString());
-        currentEmpid++;
+        current_Empid++;
 
-        while (!arrList.contains(currentEmpid)) {
-            currentEmpid++;
+        while (!arrList.contains(current_Empid)) {
+            current_Empid++;
         }
         viewCreatedList(chatId, S);
     }
@@ -259,10 +264,10 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
     public void prevElem(Long chatId, String S) {
         ArrayList<Integer> arrList = db.searchEvents(conn, "event", chatId.toString());
-        currentEmpid--;
+        current_Empid--;
 
-        while(!arrList.contains(currentEmpid)) {
-            currentEmpid--;
+        while(!arrList.contains(current_Empid)) {
+            current_Empid--;
         }
 
         viewCreatedList(chatId, S);
