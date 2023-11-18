@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Класс отвечает за работу с базой данных
@@ -98,13 +99,17 @@ public class telegramBotDatabase {
             String query;
             if (tableName.equals("users")) {
                 query = "update " + tableName + " set " + column + " = ? where chatid = ?";
+                preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, value);
+                preparedStatement.setString(2, chatID);
             } else {
                 query = "update " + tableName + " set " + column + " = ? where chatid = ? and empid = (select max(empid) from " + tableName + " where chatid = ?)";
+                preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, value);
+                preparedStatement.setString(2, chatID);
+                preparedStatement.setString(3, chatID);
             }
-            preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, value);
-            preparedStatement.setString(2, chatID);
-            preparedStatement.setString(3, chatID);
+
             preparedStatement.executeUpdate();
             System.out.println("Update OK");
         } catch (SQLException e) {
@@ -161,6 +166,12 @@ public class telegramBotDatabase {
         }
     }
 
+    /**
+     * Выборка строки из таблицы по empid
+     *
+     * @param tableName Имя таблицы, которую парсим.
+     * @param empid Id строки, из которой выводится информация.
+     */
     public String[] viewRowEvent(Connection conn, String tableName, int empid) {
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
@@ -221,18 +232,21 @@ public class telegramBotDatabase {
         return null;
     }
 
-    public ArrayList<Integer> searchEvents(Connection conn, String tableName, String chatId){
+
+    public ArrayList<Integer> searchEvents(Connection conn, String tableName, String chatId) {
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
+
         try {
-            String query = "SELECT * FROM " + tableName + " WHERE chatid = ?";
+            String query = "SELECT * FROM " + tableName + " WHERE chatid = ? AND empid IN (SELECT DISTINCT empid FROM " + tableName + " WHERE chatid = ?)";
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, chatId);
+            preparedStatement.setString(2, chatId);
             rs = preparedStatement.executeQuery();
 
             ArrayList<Integer> arrList = new ArrayList<>();
             while (rs.next()) {
-                arrList.add(rs.getInt(1));
+                arrList.add(rs.getInt("empid"));
             }
             return arrList;
 
@@ -252,6 +266,28 @@ public class telegramBotDatabase {
             }
         }
     }
+
+    public void deleteRow(Connection conn, String tableName, int empid) {
+        PreparedStatement preparedStatement = null;
+
+        try {
+            String query =  ("DELETE FROM " + tableName + " WHERE empid = ?");
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, empid);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     public int countRow(Connection conn, String tableName){
         PreparedStatement preparedStatement = null;

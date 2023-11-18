@@ -165,5 +165,69 @@
         "callBackData": "empidPlus"
       }
     }
+  },
+
+  "firstMyEvent$": {
+    "text" :"",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "Удалить",
+        "callBackData": "delEvent"
+      },
+      "b2": {
+        "butText": "->",
+        "callBackData": "nextElem"
+      }
+    }
+  },
+
+  "lastMyEvent$": {
+    "text" :"",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "<-",
+        "callBackData": "prevElem"
+      },
+      "b2": {
+        "butText": "Удалить",
+        "callBackData": "delEvent"
+      }
+    }
+  },
+
+  "midleMyEvent$": {
+    "text" :"",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 3,
+      "b1": {
+        "butText": "<-",
+        "callBackData": "prevElem"
+      },
+      "b2": {
+        "butText": "Удалить",
+        "callBackData": "delEvent"
+      },
+      "b3": {
+        "butText": "->",
+        "callBackData": "nextElem"
+      }
+    }
+  },
+
+  "oneMyEvent$": {
+    "text" :"",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 1,
+      "b1": {
+        "butText": "Удалить",
+        "callBackData": "delElem"
+      }
+    }
   }
 }
