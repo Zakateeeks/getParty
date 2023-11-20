@@ -117,7 +117,8 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
     public void eventList(Long chatId, String S) {
         telegramBotCommand newCommand;
-        if (currentEmpid==1) {
+        if (currentEmpid==1 | currentEmpid>db.countRow(conn,"event")) {
+            currentEmpid=1;
             newCommand = new telegramBotCommand("first$");
         }else if(currentEmpid == db.countRow(conn,"event")){
             newCommand = new telegramBotCommand("last$");

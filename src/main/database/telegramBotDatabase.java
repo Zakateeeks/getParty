@@ -275,6 +275,10 @@ public class telegramBotDatabase {
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setInt(1, empid);
             preparedStatement.executeUpdate();
+
+            query =  ("alter table "+tableName+" DROP COLUMN empid;"+"alter table "+tableName+" add empid serial");
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
