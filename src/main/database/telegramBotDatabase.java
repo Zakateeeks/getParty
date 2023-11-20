@@ -308,4 +308,38 @@ public class telegramBotDatabase {
             return 0;
         }
     }
+
+    /**
+     * Добавляет пользователя в список участников в таблице мероприятийю.
+     *
+     * @param tableName Имя таблицы, в которую нужно добавить информацию.
+     * @param empidEvent empid мероприятия, на который нужно записать пользователя.
+     * @param chatID chatID пользователя, которого нужно записать на мероприятие.
+     */
+    public void singUpUser(Connection conn, String tableName, int empidEvent, String chatID) {
+        PreparedStatement preparedStatement = null;
+        String empidUsers = searchByChatID(conn,"users",chatID,"empid");
+        String oldData = viewRowEvent(conn,tableName,empidEvent)[7]+"";
+        String newData;
+        if (oldData.equals("null")){newData=empidUsers;}
+        else{newData = oldData+" "+empidUsers;}
+        try {
+            String query = "update " + tableName + " set " + "participants" + " = ? where empid = ?";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, newData);
+            preparedStatement.setInt(2, empidEvent);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Update Error: " + e.getMessage());
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

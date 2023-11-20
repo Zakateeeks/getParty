@@ -37,6 +37,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
         commandHandlers.put("viewProfile", this::viewProfile);
         commandHandlers.put("createdEventList", this::viewCreatedList);
         commandHandlers.put("delEvent", this::deleteEvent);
+        commandHandlers.put("signUp", this::signUpAnEvent);
     }
 
 
@@ -144,7 +145,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
         try {
             String[] eventRow = db.viewRowEvent(conn, "event", currentEmpid);
-            message.setText(eventRow[2] + "\n\n" + "*Организатор:* " + eventRow[1] + "\n\n" + eventRow[3] + "\n\n*Дата и время:* " + eventRow[6]);
+            message.setText(eventRow[1] + "\n\n" + "*Организатор:* " + eventRow[0] + "\n\n" + eventRow[2] + "\n\n*Дата и время:* " + eventRow[5]);
             message.enableMarkdown(true);
             execute(message);
         } catch (TelegramApiException e){
@@ -221,7 +222,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
         try {
             String[] eventRow = db.viewRowEvent(conn, "event", current_Empid);
-            message.setText(eventRow[2] + "\n\n" + "*Организатор:* " + eventRow[1] + "\n\n" + eventRow[3] + "\n\n*Дата и время:* " + eventRow[6]);
+            message.setText(eventRow[1] + "\n\n" + "*Организатор:* " + eventRow[0] + "\n\n" + eventRow[2] + "\n\n*Дата и время:* " + eventRow[5]);
             message.enableMarkdown(true);
             execute(message);
         } catch (TelegramApiException e){
@@ -276,6 +277,10 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
     public void toMenu(Long chatId, String S){
         textCommand(chatId,"menu$");
+    }
+    public void signUpAnEvent(Long chatId, String S){
+        db.singUpUser(conn,"event",currentEmpid,Long.toString(chatId));
+        textCommand(chatId,"singUp$");
     }
 
 }
