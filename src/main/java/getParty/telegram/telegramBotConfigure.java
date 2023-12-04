@@ -1,7 +1,9 @@
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 
 /**
@@ -34,6 +36,18 @@ public class telegramBotConfigure extends TelegramLongPollingBot {
         else{
             telegramFSM fsm = new telegramFSM();
             fsm.selectInfo(update.getMessage().getChatId(),fsm.getState(),update.getMessage().getText());
+        }
+    }
+
+    public void sendNotification(String chatId, String message) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(message);
+
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 

@@ -15,8 +15,12 @@ public class telegramBot {
         db.createTable(conn, "event", eventTableStructure);
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+            telegramBotConfigure bot = new telegramBotConfigure();
             botsApi.registerBot(new telegramBotConfigure());
 
+            telegramBotNotification notification = new telegramBotNotification(bot);
+            Thread notificationThread = new Thread(notification);
+            notificationThread.start();
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
