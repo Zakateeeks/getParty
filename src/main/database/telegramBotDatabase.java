@@ -2,6 +2,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Integer.parseInt;
+
 /**
  * Класс отвечает за работу с базой данных
  *
@@ -202,13 +204,19 @@ public class telegramBotDatabase {
         return null;
     }
 
-    public String[] viewRowUsers(Connection conn, String tableName, String chatId){
+    public String[] viewRowUsers(Connection conn, String tableName, String search,String info){
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
         try {
-            String query = "SELECT * FROM " + tableName + " WHERE chatid = ?";
-            preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, chatId);
+            if(search.equals("empid")) {
+                String query = "SELECT * FROM " + tableName + " WHERE empid = CAST(? AS INTEGER)";
+                preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, info);
+            }else{
+                String query = "SELECT * FROM " + tableName + " WHERE chatid = ?";
+                preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, info);
+            }
             rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
@@ -310,7 +318,7 @@ public class telegramBotDatabase {
     }
 
     /**
-     * Добавляет пользователя в список участников в таблице мероприятийю.
+     * Добавляет пользователя в список участников в таблице мероприятий .
      *
      * @param tableName Имя таблицы, в которую нужно добавить информацию.
      * @param empidEvent empid мероприятия, на который нужно записать пользователя.

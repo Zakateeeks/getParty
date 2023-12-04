@@ -21,7 +21,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
     telegramBotDatabase db = new telegramBotDatabase();
     Connection conn = db.connectToDatabase("bot_users", "postgres", "1234");
     private static int currentEmpid = 1;
-    private static int current_Empid = 0;
+    private static int currentEmpidCreated = 0;
 
     public telegramBotHandlers() {
         commandHandlers.put("registration", this::textCommand);
@@ -173,7 +173,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
         message.setReplyMarkup(inlineKeyboardMarkup);
 
         try {
-            String[] eventRow = db.viewRowUsers(conn, "users", chatId.toString());
+            String[] eventRow = db.viewRowUsers(conn, "users","chatid", chatId.toString());
             message.setText(eventRow[1] + "\n\n" + "*Ваша роль:* " + eventRow[2] + "\n\n" + eventRow[3]);
             message.enableMarkdown(true);
             execute(message);
@@ -187,15 +187,15 @@ public class telegramBotHandlers extends telegramBotConfigure {
         ArrayList<Integer> arrList = db.searchEvents(conn,"event",chatId.toString());
         telegramBotCommand newCommand;
 
-        if (current_Empid == arrList.get(0)) {
+        if (currentEmpidCreated == arrList.get(0)) {
             newCommand = new telegramBotCommand("firstMyEvent$");
-        } else if(current_Empid == arrList.get(arrList.size() - 1)){
+        } else if(currentEmpidCreated == arrList.get(arrList.size() - 1)){
             newCommand = new telegramBotCommand("lastMyEvent$");
         } else if (arrList.size() == 1) {
-            current_Empid = arrList.get(0);
+            currentEmpidCreated = arrList.get(0);
             newCommand = new telegramBotCommand("oneMyEvent$");
-        } else if (arrList.size() != 0 && current_Empid == 0) {
-            current_Empid = arrList.get(0);
+        } else if (arrList.size() != 0 && currentEmpidCreated == 0) {
+            currentEmpidCreated = arrList.get(0);
             newCommand = new telegramBotCommand("firstMyEvent$");
 
         } else {
@@ -221,7 +221,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
         message.setReplyMarkup(inlineKeyboardMarkup);
 
         try {
-            String[] eventRow = db.viewRowEvent(conn, "event", current_Empid);
+            String[] eventRow = db.viewRowEvent(conn, "event", currentEmpidCreated);
             message.setText(eventRow[1] + "\n\n" + "*Организатор:* " + eventRow[0] + "\n\n" + eventRow[2] + "\n\n*Дата и время:* " + eventRow[5]);
             message.enableMarkdown(true);
             execute(message);
@@ -230,11 +230,12 @@ public class telegramBotHandlers extends telegramBotConfigure {
         }
     }
 
+
     public void deleteEvent(Long chatId, String S) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
 
-        db.deleteRow(conn, "event", current_Empid);
+        db.deleteRow(conn, "event", currentEmpidCreated);
         try {
             message.setText("Мероприятие успешно удалено!");
             execute(message);
@@ -251,10 +252,10 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
     public void nextElem(Long chatId, String S) {
         ArrayList<Integer> arrList = db.searchEvents(conn, "event", chatId.toString());
-        current_Empid++;
+        currentEmpidCreated++;
 
-        while (!arrList.contains(current_Empid)) {
-            current_Empid++;
+        while (!arrList.contains(currentEmpidCreated)) {
+            currentEmpidCreated++;
         }
         viewCreatedList(chatId, S);
     }
@@ -266,10 +267,10 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
     public void prevElem(Long chatId, String S) {
         ArrayList<Integer> arrList = db.searchEvents(conn, "event", chatId.toString());
-        current_Empid--;
+        currentEmpidCreated--;
 
-        while(!arrList.contains(current_Empid)) {
-            current_Empid--;
+        while(!arrList.contains(currentEmpidCreated)) {
+            currentEmpidCreated--;
         }
 
         viewCreatedList(chatId, S);
