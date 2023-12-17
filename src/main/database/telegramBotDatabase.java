@@ -15,17 +15,16 @@ public class telegramBotDatabase {
      * Коннект с базой данных
      */
     public Connection connectToDatabase(String dbname, String user, String pass) {
-        Connection conn=null;
-        try{
+        Connection conn = null;
+        try {
             Class.forName("org.postgresql.Driver");
-            conn= DriverManager.getConnection("jdbc:postgresql://localhost:5432/"+dbname, user, pass);
-            if(conn!=null){
+            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + dbname, user, pass);
+            if (conn != null) {
                 System.out.println("Connection Established");
-            }
-            else{
+            } else {
                 System.out.println("Connection Failed");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
         return conn;
@@ -34,11 +33,11 @@ public class telegramBotDatabase {
     /**
      * Создает новую таблицу в базе данных с указанным именем.
      *
-     * @param tableName Имя таблицы, которую нужно создать.
+     * @param tableName      Имя таблицы, которую нужно создать.
      * @param tableStructure Струкутра таблицы, задающая поля и их размеры
      */
     public void createTable(Connection conn, String tableName, String tableStructure) {
-        String query = "CREATE TABLE "+tableName+" ("+tableStructure+")";
+        String query = "CREATE TABLE " + tableName + " (" + tableStructure + ")";
 
         try {
             PreparedStatement ps = conn.prepareStatement(query);
@@ -54,26 +53,25 @@ public class telegramBotDatabase {
      * Создает строку в таблице с указанным именем.
      *
      * @param tableName Имя таблицы, в которую нужно добавить строку.
-     * @param field1 Имя поля в которые нужно добавить информаиию.
-     * @param value1 Информация которую нуцжно добавить в поле.
+     * @param field1    Имя поля в которые нужно добавить информаиию.
+     * @param value1    Информация которую нуцжно добавить в поле.
      */
-    public void insertRow(Connection conn, String tableName, String field1, String field2, String value1, String value2 ) {
+    public void insertRow(Connection conn, String tableName, String field1, String field2, String value1, String value2) {
         PreparedStatement preparedStatement = null;
         dataVerification verification = new dataVerification();
         try {
-            verification.verify(field1,value1);
-            verification.verify(field2,value2);
+            verification.verify(field1, value1);
+            verification.verify(field2, value2);
 
-            String query = "insert into " + tableName + "("+field1+","+field2+") values (?, ?)";
+            String query = "insert into " + tableName + "(" + field1 + "," + field2 + ") values (?, ?)";
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, value1);
             preparedStatement.setString(2, value2);
             preparedStatement.executeUpdate();
             System.out.println("Row created");
-        }catch (InvalidDatabaseEntryException e){
+        } catch (InvalidDatabaseEntryException e) {
             System.out.println(e.getMessage());
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println("Row create Error: " + e.getMessage());
         } finally {
             try {
@@ -90,14 +88,14 @@ public class telegramBotDatabase {
      * Добавляет инофрмацию в указаное поле с заданным chatid
      *
      * @param tableName Имя таблицы, в которую нужно добавить информацию.
-     * @param column Поле в которое нужно добавить информацию.
-     * @param value Значение, которое будет добавлено в данное поле
+     * @param column    Поле в которое нужно добавить информацию.
+     * @param value     Значение, которое будет добавлено в данное поле
      */
     public void update(Connection conn, String tableName, String column, String value, String chatID) throws InvalidDatabaseEntryException {
         PreparedStatement preparedStatement = null;
         dataVerification verification = new dataVerification();
         try {
-            verification.verify(column,value);
+            verification.verify(column, value);
             String query;
             if (tableName.equals("users")) {
                 query = "update " + tableName + " set " + column + " = ? where chatid = ?";
@@ -116,7 +114,7 @@ public class telegramBotDatabase {
             System.out.println("Update OK");
         } catch (SQLException e) {
             System.out.println("Update Error: " + e.getMessage());
-        } catch (InvalidDatabaseEntryException e){
+        } catch (InvalidDatabaseEntryException e) {
             System.out.println(e.getMessage());
             throw new InvalidDatabaseEntryException("Данные не корректны");
         } finally {
@@ -133,7 +131,7 @@ public class telegramBotDatabase {
     /**
      * Поиск информации в указанном поле с заданным chatid
      *
-     * @param tableName Имя таблицы, в которую нужно добавить информацию.
+     * @param tableName     Имя таблицы, в которую нужно добавить информацию.
      * @param searchProduct Поле, в котором ищется инофрмация.
      */
     public String searchByChatID(Connection conn, String tableName, String chatID, String searchProduct) {
@@ -172,7 +170,7 @@ public class telegramBotDatabase {
      * Выборка строки из таблицы по empid
      *
      * @param tableName Имя таблицы, которую парсим.
-     * @param empid Id строки, из которой выводится информация.
+     * @param empid     Id строки, из которой выводится информация.
      */
     public String[] viewRowEvent(Connection conn, String tableName, int empid) {
         PreparedStatement preparedStatement = null;
@@ -184,7 +182,7 @@ public class telegramBotDatabase {
             rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
-                return new String[]{rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8)};
+                return new String[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9)};
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -204,15 +202,15 @@ public class telegramBotDatabase {
         return null;
     }
 
-    public String[] viewRowUsers(Connection conn, String tableName, String search,String info){
+    public String[] viewRowUsers(Connection conn, String tableName, String search, String info) {
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
         try {
-            if(search.equals("empid")) {
+            if (search.equals("empid")) {
                 String query = "SELECT * FROM " + tableName + " WHERE empid = CAST(? AS INTEGER)";
                 preparedStatement = conn.prepareStatement(query);
                 preparedStatement.setString(1, info);
-            }else{
+            } else {
                 String query = "SELECT * FROM " + tableName + " WHERE chatid = ?";
                 preparedStatement = conn.prepareStatement(query);
                 preparedStatement.setString(1, info);
@@ -220,7 +218,7 @@ public class telegramBotDatabase {
             rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
-                return new String[]{rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)};
+                return new String[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)};
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -279,12 +277,12 @@ public class telegramBotDatabase {
         PreparedStatement preparedStatement = null;
 
         try {
-            String query =  ("DELETE FROM " + tableName + " WHERE empid = ?");
+            String query = ("DELETE FROM " + tableName + " WHERE empid = ?");
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setInt(1, empid);
             preparedStatement.executeUpdate();
 
-            query =  ("alter table "+tableName+" DROP COLUMN empid;"+"alter table "+tableName+" add empid serial");
+            query = ("alter table " + tableName + " DROP COLUMN empid;" + "alter table " + tableName + " add empid serial");
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -301,11 +299,11 @@ public class telegramBotDatabase {
     }
 
 
-    public int countRow(Connection conn, String tableName){
+    public int countRow(Connection conn, String tableName) {
         PreparedStatement preparedStatement = null;
         ResultSet rs;
         try {
-            String query = "SELECT COUNT(*) FROM "+tableName;
+            String query = "SELECT COUNT(*) FROM " + tableName;
             preparedStatement = conn.prepareStatement(query);
             rs = preparedStatement.executeQuery();
             rs.next();
@@ -317,20 +315,35 @@ public class telegramBotDatabase {
         }
     }
 
+    public void changeNotState(Connection conn, int empid) throws SQLException {
+        PreparedStatement preparedStatement = null;
+
+
+        String query = "update event set notification = false where  empid = CAST(? AS INTEGER)";
+        preparedStatement = conn.prepareStatement(query);
+        preparedStatement.setString(1, String.valueOf(empid));
+
+        preparedStatement.executeUpdate();
+        System.out.println("Update OK");
+    }
+
     /**
      * Добавляет пользователя в список участников в таблице мероприятий .
      *
-     * @param tableName Имя таблицы, в которую нужно добавить информацию.
+     * @param tableName  Имя таблицы, в которую нужно добавить информацию.
      * @param empidEvent empid мероприятия, на который нужно записать пользователя.
-     * @param chatID chatID пользователя, которого нужно записать на мероприятие.
+     * @param chatID     chatID пользователя, которого нужно записать на мероприятие.
      */
     public void singUpUser(Connection conn, String tableName, int empidEvent, String chatID) {
         PreparedStatement preparedStatement = null;
-        String empidUsers = searchByChatID(conn,"users",chatID,"empid");
-        String oldData = viewRowEvent(conn,tableName,empidEvent)[7]+"";
+        String empidUsers = searchByChatID(conn, "users", chatID, "empid");
+        String oldData = viewRowEvent(conn, tableName, empidEvent)[7] + "";
         String newData;
-        if (oldData.equals("null")){newData=empidUsers;}
-        else{newData = oldData+" "+empidUsers;}
+        if (oldData.equals("null")) {
+            newData = empidUsers;
+        } else {
+            newData = oldData + " " + empidUsers;
+        }
         try {
             String query = "update " + tableName + " set " + "participants" + " = ? where empid = ?";
             preparedStatement = conn.prepareStatement(query);

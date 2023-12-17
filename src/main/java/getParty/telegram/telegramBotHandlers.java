@@ -110,7 +110,6 @@ public class telegramBotHandlers extends telegramBotConfigure {
             message.setText("Как называется Ваше мероприятие?");
             execute(message);
             db.insertRow(conn, "event", "organizer","chatid",organizer, chatId.toString());
-
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
