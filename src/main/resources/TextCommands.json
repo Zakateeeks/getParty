@@ -171,12 +171,16 @@
     "text" :"",
     "inlineButtons": true,
     "buttons": {
-      "count": 2,
+      "count": 3,
       "b1": {
         "butText": "Удалить",
         "callBackData": "delEvent"
       },
       "b2": {
+        "butText": "Участники",
+        "callBackData": "viewMember"
+      },
+      "b3": {
         "butText": "->",
         "callBackData": "nextElem"
       }
@@ -184,22 +188,6 @@
   },
 
   "lastMyEvent$": {
-    "text" :"",
-    "inlineButtons": true,
-    "buttons": {
-      "count": 2,
-      "b1": {
-        "butText": "<-",
-        "callBackData": "prevElem"
-      },
-      "b2": {
-        "butText": "Удалить",
-        "callBackData": "delEvent"
-      }
-    }
-  },
-
-  "midleMyEvent$": {
     "text" :"",
     "inlineButtons": true,
     "buttons": {
@@ -213,6 +201,30 @@
         "callBackData": "delEvent"
       },
       "b3": {
+        "butText": "Участники",
+        "callBackData": "viewMember"
+      }
+    }
+  },
+
+  "midleMyEvent$": {
+    "text" :"",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 4,
+      "b1": {
+        "butText": "<-",
+        "callBackData": "prevElem"
+      },
+      "b2": {
+        "butText": "Удалить",
+        "callBackData": "delEvent"
+      },
+      "b3": {
+        "butText": "Участники",
+        "callBackData": "viewMember"
+      },
+      "b4": {
         "butText": "->",
         "callBackData": "nextElem"
       }
@@ -223,10 +235,14 @@
     "text" :"",
     "inlineButtons": true,
     "buttons": {
-      "count": 1,
+      "count": 2,
       "b1": {
         "butText": "Удалить",
         "callBackData": "delElem"
+      },
+      "b2": {
+        "butText": "Участники",
+        "callBackData": "viewMember"
       }
     }
   },
@@ -238,6 +254,66 @@
       "b1": {
         "butText": "В меню",
         "callBackData": "menu"
+      }
+    }
+  },
+  "oneMember$" : {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 1,
+      "b1": {
+        "butText": "Исключить",
+        "callBackData": "deleteMember"
+      }
+    }
+  },
+  "firstMember$" : {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "Исключить",
+        "callBackData": "deleteMember"
+      },
+      "b2": {
+        "butText": "->",
+        "callBackData": "plusCounter"
+      }
+    }
+  },
+  "lastMember$" : {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "<-",
+        "callBackData": "minusCounter"
+      },
+      "b2": {
+        "butText": "Исключить",
+        "callBackData": "deleteMember"
+      }
+    }
+  },
+  "midleMember$" : {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "<-",
+        "callBackData": "minusCounter"
+      },
+      "b2": {
+        "butText": "Исключить",
+        "callBackData": "deleteMember"
+      },
+      "b3": {
+        "butText": "->",
+        "callBackData": "plusCounter"
       }
     }
   }

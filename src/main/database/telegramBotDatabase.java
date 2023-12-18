@@ -317,12 +317,19 @@ public class telegramBotDatabase {
 
     public void changeNotState(Connection conn, int empid) throws SQLException {
         PreparedStatement preparedStatement = null;
-
-
         String query = "update event set notification = false where  empid = CAST(? AS INTEGER)";
         preparedStatement = conn.prepareStatement(query);
         preparedStatement.setString(1, String.valueOf(empid));
+        preparedStatement.executeUpdate();
+        System.out.println("Update OK");
+    }
 
+    public void editMembers(Connection conn, int empid, String newMembers) throws SQLException {
+        PreparedStatement preparedStatement = null;
+        String query = "update event set participants = ? where  empid = CAST(? AS INTEGER)";
+        preparedStatement = conn.prepareStatement(query);
+        preparedStatement.setString(1, newMembers);
+        preparedStatement.setString(2, String.valueOf(empid));
         preparedStatement.executeUpdate();
         System.out.println("Update OK");
     }

@@ -4,10 +4,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -22,6 +20,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
     Connection conn = db.connectToDatabase("bot_users", "postgres", "1234");
     private static int currentEmpid = 1;
     private static int currentEmpidCreated = 0;
+    private static int counterMember = 0;
 
     public telegramBotHandlers() {
         commandHandlers.put("registration", this::textCommand);
@@ -38,6 +37,10 @@ public class telegramBotHandlers extends telegramBotConfigure {
         commandHandlers.put("createdEventList", this::viewCreatedList);
         commandHandlers.put("delEvent", this::deleteEvent);
         commandHandlers.put("signUp", this::signUpAnEvent);
+        commandHandlers.put("viewMember", this::viewEventMembers);
+        commandHandlers.put("plusCounter", this::plusCounter);
+        commandHandlers.put("minusCounter", this::minusCounter);
+        commandHandlers.put("deleteMember", this::deleteMember);
     }
 
 
@@ -46,9 +49,9 @@ public class telegramBotHandlers extends telegramBotConfigure {
         List<InlineKeyboardButton> inlineButtons = newCommand.getButtonsList();
 
         SendMessage message = new SendMessage();
-                message.enableMarkdown(true);
-                message.setChatId(chatId);
-                message.setText(newCommand.getCommandText());
+        message.enableMarkdown(true);
+        message.setChatId(chatId);
+        message.setText(newCommand.getCommandText());
 
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
@@ -70,7 +73,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
         }
     }
 
-    public void registration(Long chatId, String S){
+    public void registration(Long chatId, String S) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         telegramFSM fsm = new telegramFSM();
@@ -83,12 +86,12 @@ public class telegramBotHandlers extends telegramBotConfigure {
                 String role;
                 message.setText("Введите имя");
                 execute(message);
-                if(S.equals("member")){
-                     role = "Участник";
-                }else{
-                     role = "Организатор";
+                if (S.equals("member")) {
+                    role = "Участник";
+                } else {
+                    role = "Организатор";
                 }
-                db.insertRow(conn, "users", "role","chatid",role, chatId.toString());
+                db.insertRow(conn, "users", "role", "chatid", role, chatId.toString());
             } else {
                 message.setText("Вы уже зарегистрированы");
                 execute(message);
@@ -99,7 +102,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
         }
     }
 
-    public void createEvent(Long chatId, String S){
+    public void createEvent(Long chatId, String S) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         telegramFSM fsm = new telegramFSM();
@@ -109,7 +112,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
             String organizer = db.searchByChatID(conn, "users", chatId.toString(), "name");
             message.setText("Как называется Ваше мероприятие?");
             execute(message);
-            db.insertRow(conn, "event", "organizer","chatid",organizer, chatId.toString());
+            db.insertRow(conn, "event", "organizer", "chatid", organizer, chatId.toString());
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
@@ -117,12 +120,12 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
     public void eventList(Long chatId, String S) {
         telegramBotCommand newCommand;
-        if (currentEmpid==1 | currentEmpid>db.countRow(conn,"event")) {
-            currentEmpid=1;
+        if (currentEmpid == 1 | currentEmpid > db.countRow(conn, "event")) {
+            currentEmpid = 1;
             newCommand = new telegramBotCommand("first$");
-        }else if(currentEmpid == db.countRow(conn,"event")){
+        } else if (currentEmpid == db.countRow(conn, "event")) {
             newCommand = new telegramBotCommand("last$");
-        }else{
+        } else {
             newCommand = new telegramBotCommand("midle$");
         }
         List<InlineKeyboardButton> inlineButtons = newCommand.getButtonsList();
@@ -147,13 +150,14 @@ public class telegramBotHandlers extends telegramBotConfigure {
             message.setText(eventRow[1] + "\n\n" + "*Организатор:* " + eventRow[0] + "\n\n" + eventRow[2] + "\n\n*Дата и время:* " + eventRow[5]);
             message.enableMarkdown(true);
             execute(message);
-        } catch (TelegramApiException e){
+        } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
 
-    public void viewProfile(Long chatId, String S){
-        telegramBotCommand newCommand = new telegramBotCommand("profile$");;
+    public void viewProfile(Long chatId, String S) {
+        telegramBotCommand newCommand = new telegramBotCommand("profile$");
+        ;
         List<InlineKeyboardButton> inlineButtons = newCommand.getButtonsList();
 
         SendMessage message = new SendMessage();
@@ -172,23 +176,23 @@ public class telegramBotHandlers extends telegramBotConfigure {
         message.setReplyMarkup(inlineKeyboardMarkup);
 
         try {
-            String[] eventRow = db.viewRowUsers(conn, "users","chatid", chatId.toString());
+            String[] eventRow = db.viewRowUsers(conn, "users", "chatid", chatId.toString());
             message.setText(eventRow[1] + "\n\n" + "*Ваша роль:* " + eventRow[2] + "\n\n" + eventRow[3]);
             message.enableMarkdown(true);
             execute(message);
-        } catch (TelegramApiException e){
+        } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
 
 
-    public void viewCreatedList(Long chatId,String S){
-        ArrayList<Integer> arrList = db.searchEvents(conn,"event",chatId.toString());
+    public void viewCreatedList(Long chatId, String S) {
+        ArrayList<Integer> arrList = db.searchEvents(conn, "event", chatId.toString());
         telegramBotCommand newCommand;
 
         if (currentEmpidCreated == arrList.get(0)) {
             newCommand = new telegramBotCommand("firstMyEvent$");
-        } else if(currentEmpidCreated == arrList.get(arrList.size() - 1)){
+        } else if (currentEmpidCreated == arrList.get(arrList.size() - 1)) {
             newCommand = new telegramBotCommand("lastMyEvent$");
         } else if (arrList.size() == 1) {
             currentEmpidCreated = arrList.get(0);
@@ -224,11 +228,98 @@ public class telegramBotHandlers extends telegramBotConfigure {
             message.setText(eventRow[1] + "\n\n" + "*Организатор:* " + eventRow[0] + "\n\n" + eventRow[2] + "\n\n*Дата и время:* " + eventRow[5]);
             message.enableMarkdown(true);
             execute(message);
-        } catch (TelegramApiException e){
+        } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
 
+    public void viewEventMembers(Long chatId, String s) {
+        telegramBotCommand newCommand;
+        String[] thisEvent = db.viewRowEvent(conn, "event", currentEmpidCreated);
+        String members = thisEvent[7];
+        if (members != null && !members.equals("")) {
+            String[] memArr = members.split(" ");
+
+            if (memArr.length == 1){
+                newCommand = new telegramBotCommand("oneMember$");
+            }
+            else{
+                if (counterMember == 0){
+                    newCommand = new telegramBotCommand("firstMember$");
+                }
+                else if (counterMember == memArr.length-1){
+                    newCommand = new telegramBotCommand("lastMember$");
+                }
+                else {
+                    newCommand = new telegramBotCommand("midleMember$");
+                }
+            }
+            List<InlineKeyboardButton> inlineButtons = newCommand.getButtonsList();
+
+            SendMessage message = new SendMessage();
+            message.setChatId(chatId);
+
+            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+            List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
+
+            if (inlineButtons != null && !inlineButtons.isEmpty()) {
+                List<InlineKeyboardButton> row = new ArrayList<>();
+                row.addAll(inlineButtons);
+                keyboardRows.add(row);
+            }
+
+            inlineKeyboardMarkup.setKeyboard(keyboardRows);
+            message.setReplyMarkup(inlineKeyboardMarkup);
+
+            try {
+                String[] userRow = db.viewRowUsers(conn, "users", "empid",String.valueOf(memArr[counterMember]));
+                message.setText(userRow[1] + "\n\n"+ userRow[3]);
+                message.enableMarkdown(true);
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            SendMessage message = new SendMessage();
+            message.setChatId(chatId);
+            try {
+                message.setText("Никто не пришел на сходку папищеков(((((😭😭😭");
+                message.enableMarkdown(true);
+                execute(message);
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void deleteMember(Long chatId, String s) {
+        String[] thisEvent = db.viewRowEvent(conn, "event", currentEmpidCreated);
+        String[] members = thisEvent[7].split(" ");
+        String[] result = new String[members.length - 1];
+        int index = counterMember;
+
+        System.arraycopy(members, 0, result, 0, index);
+        System.arraycopy(members, index + 1, result, index, members.length - index - 1);
+
+        String newMember = Arrays.toString(result).replace(',',' ').replace("[","").replace("]","");
+        try {
+            db.editMembers(conn,currentEmpidCreated,newMember);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        try {
+            message.setText("Участник исключен, так его🤬🤬🤬");
+            message.enableMarkdown(true);
+            execute(message);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void deleteEvent(Long chatId, String S) {
         SendMessage message = new SendMessage();
@@ -244,11 +335,20 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
     }
 
-    public void empidPlus(Long chatId, String S){
+    public void empidPlus(Long chatId, String S) {
         currentEmpid++;
-        eventList(chatId,S);
+        eventList(chatId, S);
     }
 
+    public void plusCounter(Long chatId, String S) {
+        counterMember++;
+        viewEventMembers(chatId, S);
+    }
+
+    public void minusCounter(Long chatId, String S) {
+        counterMember--;
+        viewEventMembers(chatId, S);
+    }
     public void nextElem(Long chatId, String S) {
         ArrayList<Integer> arrList = db.searchEvents(conn, "event", chatId.toString());
         currentEmpidCreated++;
@@ -259,28 +359,29 @@ public class telegramBotHandlers extends telegramBotConfigure {
         viewCreatedList(chatId, S);
     }
 
-    public void empidMinus(Long chatId, String S){
+    public void empidMinus(Long chatId, String S) {
         currentEmpid--;
-        eventList(chatId,S);
+        eventList(chatId, S);
     }
 
     public void prevElem(Long chatId, String S) {
         ArrayList<Integer> arrList = db.searchEvents(conn, "event", chatId.toString());
         currentEmpidCreated--;
 
-        while(!arrList.contains(currentEmpidCreated)) {
+        while (!arrList.contains(currentEmpidCreated)) {
             currentEmpidCreated--;
         }
 
         viewCreatedList(chatId, S);
     }
 
-    public void toMenu(Long chatId, String S){
-        textCommand(chatId,"menu$");
+    public void toMenu(Long chatId, String S) {
+        textCommand(chatId, "menu$");
     }
-    public void signUpAnEvent(Long chatId, String S){
-        db.singUpUser(conn,"event",currentEmpid,Long.toString(chatId));
-        textCommand(chatId,"singUp$");
+
+    public void signUpAnEvent(Long chatId, String S) {
+        db.singUpUser(conn, "event", currentEmpid, Long.toString(chatId));
+        textCommand(chatId, "singUp$");
     }
 
 }
