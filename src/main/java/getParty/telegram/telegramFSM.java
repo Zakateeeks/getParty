@@ -18,6 +18,7 @@ public class telegramFSM {
         switchState.put("eventdesc","eventdate");
         switchState.put("eventdate","eventref");
         switchState.put("eventref","complete");
+        switchState.put("letter","sendHandler");
     }
 
     public String getState(){
@@ -35,6 +36,10 @@ public class telegramFSM {
             handler.textCommand(chatID,"incorrectInput$");
             handler.textCommand(chatID,getState()+'$');
         }
+    }
+
+    public void sendLetter(Long chatId,String text){
+        handler.sendLetterMembers(chatId,text);
     }
 
     public void changeState(String state){

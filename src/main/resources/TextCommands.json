@@ -1,36 +1,33 @@
 {
-  "/help" :{
-    "text" :"*А вот список команд, которые бот умеет выполнять:*\n\n/help - Собственно, ты вызвал(а) сейчас эту команду. Она нужна, чтобы сориентировать тебя по тому, какие команды ещё есть в боте.\n\n/about - Благодаря этой команды ты можешь поподробнее узнать о способностях бота. Прописав эту команду, ты увидишь для чего создан этот бот, какие функции он выполняет и как с ним работать.\n\n/dev - Эта команда познакомит тебя с людьми, которые создали этого бота.",
+  "/help": {
+    "text": "*А вот список команд, которые бот умеет выполнять:*\n\n/help - Собственно, ты вызвал(а) сейчас эту команду. Она нужна, чтобы сориентировать тебя по тому, какие команды ещё есть в боте.\n\n/about - Благодаря этой команды ты можешь поподробнее узнать о способностях бота. Прописав эту команду, ты увидишь для чего создан этот бот, какие функции он выполняет и как с ним работать.\n\n/dev - Эта команда познакомит тебя с людьми, которые создали этого бота.",
     "inlineButtons": false
   },
-
-  "/dev" : {
-    "text" :"*Разработкой занимались:*\n•Дмитрий Свечников (Zakateeek)\n•Александр Цымбал (sanchezzzz300)\n•Виктор Комогоров (leeggler)",
+  "/dev": {
+    "text": "*Разработкой занимались:*\n•Дмитрий Свечников (Zakateeek)\n•Александр Цымбал (sanchezzzz300)\n•Виктор Комогоров (leeggler)",
     "inlineButtons": false
   },
-
-  "/about" : {
-    "text" :"TEXT ABOUT COMMAND",
+  "/about": {
+    "text": "TEXT ABOUT COMMAND",
     "inlineButtons": false
   },
-
-  "description$" : {
-    "text" :"А теперь расскажи о себе",
+  "description$": {
+    "text": "А теперь расскажи о себе",
     "inlineButtons": false
   },
-  "eventdesc$" : {
-    "text" :"Расскажи о своем мероприятии",
+  "eventdesc$": {
+    "text": "Расскажи о своем мероприятии",
     "inlineButtons": false
   },
-  "eventref$" : {
-    "text" :"Отправь ссылку на беседу мероприятия",
+  "eventref$": {
+    "text": "Отправь ссылку на беседу мероприятия",
     "inlineButtons": false
   },
-  "eventdate$" : {
-    "text" :"Когда оно будет проходить (в формате дд.мм.гг чч:мм)?",
+  "eventdate$": {
+    "text": "Когда оно будет проходить (в формате дд.мм.гг чч:мм)?",
     "inlineButtons": false
   },
-  "complete$" : {
+  "complete$": {
     "text": "Мероприятие создано",
     "inlineButtons": true,
     "buttons": {
@@ -41,20 +38,19 @@
       }
     }
   },
-  "/start" :{
+  "/start": {
     "text": "Привет!\n\nЭтот бот, создан для того, чтобы ты мог участвовать в различных крутых мероприятиях в своём городе!\nКроме того, ты можешь сам организовывать встречи и приглашать туда людей!\n\nНажми на кнопку регистрации, чтобы создать свой профиль и начать создавать или искать мероприятия в твоём городе!",
     "inlineButtons": true,
     "buttons": {
-        "count": 1,
-        "b1": {
-          "butText": "Региcтрация",
-          "callBackData": "registration"
-        }
+      "count": 1,
+      "b1": {
+        "butText": "Региcтрация",
+        "callBackData": "registration"
+      }
     }
   },
-
-  "registration" : {
-    "text" :"Давай начнем регистрацию\n\nТы хочешь больше участвовать в мероприятиях или организовывать их?",
+  "registration": {
+    "text": "Давай начнем регистрацию\n\nТы хочешь больше участвовать в мероприятиях или организовывать их?",
     "inlineButtons": true,
     "buttons": {
       "count": 2,
@@ -68,9 +64,8 @@
       }
     }
   },
-
-  "menu$" : {
-    "text" :"Вы можете посмотреть мероприятия, создать своё или посмотреть свой профиль",
+  "menu$": {
+    "text": "Вы можете посмотреть мероприятия, создать своё или посмотреть свой профиль",
     "inlineButtons": true,
     "buttons": {
       "count": 3,
@@ -88,9 +83,8 @@
       }
     }
   },
-
-  "profile$" : {
-    "text" :"",
+  "profile$": {
+    "text": "",
     "inlineButtons": true,
     "buttons": {
       "count": 2,
@@ -104,21 +98,20 @@
       }
     }
   },
-
-  "incorrectInput$":{
-    "text" :"Введите данные корректно",
+  "incorrectInput$": {
+    "text": "Введите данные корректно",
     "inlineButtons": false
   },
-  "name$":{
-    "text" :"Введите имя",
+  "name$": {
+    "text": "Введите имя",
     "inlineButtons": false
   },
-  "eventname$":{
-    "text" :"Как называется Ваше мероприятие?",
+  "eventname$": {
+    "text": "Как называется Ваше мероприятие?",
     "inlineButtons": false
   },
   "first$": {
-    "text" :"",
+    "text": "",
     "inlineButtons": true,
     "buttons": {
       "count": 2,
@@ -133,7 +126,7 @@
     }
   },
   "last$": {
-    "text" :"",
+    "text": "",
     "inlineButtons": true,
     "buttons": {
       "count": 2,
@@ -148,7 +141,7 @@
     }
   },
   "midle$": {
-    "text" :"",
+    "text": "",
     "inlineButtons": true,
     "buttons": {
       "count": 3,
@@ -166,12 +159,11 @@
       }
     }
   },
-
   "firstMyEvent$": {
-    "text" :"",
+    "text": "",
     "inlineButtons": true,
     "buttons": {
-      "count": 3,
+      "count": 4,
       "b1": {
         "butText": "Удалить",
         "callBackData": "delEvent"
@@ -181,34 +173,17 @@
         "callBackData": "viewMember"
       },
       "b3": {
+        "butText": "Рассылка",
+        "callBackData": "sendLetterMembers"
+      },
+      "b4": {
         "butText": "->",
         "callBackData": "nextElem"
       }
     }
   },
-
   "lastMyEvent$": {
-    "text" :"",
-    "inlineButtons": true,
-    "buttons": {
-      "count": 3,
-      "b1": {
-        "butText": "<-",
-        "callBackData": "prevElem"
-      },
-      "b2": {
-        "butText": "Удалить",
-        "callBackData": "delEvent"
-      },
-      "b3": {
-        "butText": "Участники",
-        "callBackData": "viewMember"
-      }
-    }
-  },
-
-  "midleMyEvent$": {
-    "text" :"",
+    "text": "",
     "inlineButtons": true,
     "buttons": {
       "count": 4,
@@ -225,28 +200,58 @@
         "callBackData": "viewMember"
       },
       "b4": {
+        "butText": "Рассылка",
+        "callBackData": "sendLetterMembers"
+      }
+    }
+  },
+  "midleMyEvent$": {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 5,
+      "b1": {
+        "butText": "<-",
+        "callBackData": "prevElem"
+      },
+      "b2": {
+        "butText": "Удалить",
+        "callBackData": "delEvent"
+      },
+      "b3": {
+        "butText": "Участники",
+        "callBackData": "viewMember"
+      },
+      "b4": {
+        "butText": "Рассылка",
+        "callBackData": "sendLetterMembers"
+      },
+      "b5": {
         "butText": "->",
         "callBackData": "nextElem"
       }
     }
   },
-
   "oneMyEvent$": {
-    "text" :"",
+    "text": "",
     "inlineButtons": true,
     "buttons": {
-      "count": 2,
+      "count": 3,
       "b1": {
         "butText": "Удалить",
-        "callBackData": "delElem"
+        "callBackData": "delEvent"
       },
       "b2": {
         "butText": "Участники",
         "callBackData": "viewMember"
+      },
+      "b3": {
+        "butText": "Рассылка",
+        "callBackData": "sendLetterMembers"
       }
     }
   },
-  "singUp$" : {
+  "singUp$": {
     "text": "Вы успешно записаны!",
     "inlineButtons": true,
     "buttons": {
@@ -257,7 +262,7 @@
       }
     }
   },
-  "oneMember$" : {
+  "oneMember$": {
     "text": "",
     "inlineButtons": true,
     "buttons": {
@@ -268,7 +273,7 @@
       }
     }
   },
-  "firstMember$" : {
+  "firstMember$": {
     "text": "",
     "inlineButtons": true,
     "buttons": {
@@ -283,7 +288,7 @@
       }
     }
   },
-  "lastMember$" : {
+  "lastMember$": {
     "text": "",
     "inlineButtons": true,
     "buttons": {
@@ -298,7 +303,7 @@
       }
     }
   },
-  "midleMember$" : {
+  "midleMember$": {
     "text": "",
     "inlineButtons": true,
     "buttons": {

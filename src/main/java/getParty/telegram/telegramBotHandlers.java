@@ -17,6 +17,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
     public Map<String, BiConsumer<Long, String>> commandHandlers = new HashMap<>();
     telegramBotDatabase db = new telegramBotDatabase();
+    telegramBotNewsletter newsletter = new telegramBotNewsletter();
     Connection conn = db.connectToDatabase("bot_users", "postgres", "1234");
     private static int currentEmpid = 1;
     private static int currentEmpidCreated = 0;
@@ -41,6 +42,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
         commandHandlers.put("plusCounter", this::plusCounter);
         commandHandlers.put("minusCounter", this::minusCounter);
         commandHandlers.put("deleteMember", this::deleteMember);
+        commandHandlers.put("sendLetterMembers", this::changeLetter);
     }
 
 
@@ -331,6 +333,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
 
+        newsletter.notofication(currentEmpidCreated," - это мероприятие было удалено");
         db.deleteRow(conn, "event", currentEmpidCreated);
         try {
             String[] user_inform = db.viewRowUsers(conn, "users", "chatid", chatId.toString());
@@ -343,7 +346,32 @@ public class telegramBotHandlers extends telegramBotConfigure {
         } catch (InvalidDatabaseEntryException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public void changeLetter(Long chatId, String s){
+        telegramFSM fsm = new telegramFSM();
+        fsm.changeState("letter");
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        try {
+            message.setText("Введите текст для рассылки");
+            message.enableMarkdown(true);
+            execute(message);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void sendLetterMembers(Long chatId,String s){
+        newsletter.notofication(currentEmpidCreated," : "+s);
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        try {
+            message.setText("Ваша рассылка успешно отправлена");
+            message.enableMarkdown(true);
+            execute(message);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void empidPlus(Long chatId, String S) {

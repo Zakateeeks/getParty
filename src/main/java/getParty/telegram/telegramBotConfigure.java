@@ -35,7 +35,11 @@ public class telegramBotConfigure extends TelegramLongPollingBot {
         }
         else{
             telegramFSM fsm = new telegramFSM();
-            fsm.selectInfo(update.getMessage().getChatId(),fsm.getState(),update.getMessage().getText());
+            if (fsm.getState().equals("letter")){
+                fsm.sendLetter(update.getMessage().getChatId(),update.getMessage().getText());
+            }else {
+                fsm.selectInfo(update.getMessage().getChatId(), fsm.getState(), update.getMessage().getText());
+            }
         }
     }
 
