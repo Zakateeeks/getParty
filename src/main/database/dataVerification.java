@@ -13,6 +13,7 @@ public class dataVerification {
     public dataVerification(){
         literal.put("name","[^'\";]+");
         literal.put("role",".+");
+        literal.put("countevent",".+");
         literal.put("description","[^'\";]+");
         literal.put("chatid","\\d+");
         literal.put("organizer","[^'\";]+");

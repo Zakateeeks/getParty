@@ -31,7 +31,7 @@ public class telegramBotNotification implements Runnable {
             date = thisEvent[5];
             if (thisEvent[8].equals("true")) {
                 if (date != null) {
-
+//Дофига вложенности
                     java.time.LocalDate nowDate = java.time.LocalDate.now();
                     java.time.LocalTime nowTime = java.time.LocalTime.now();
 

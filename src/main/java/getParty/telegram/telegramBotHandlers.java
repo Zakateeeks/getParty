@@ -82,7 +82,7 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
         System.out.println(S);
         try {
-            if (db.searchByChatID(conn, "users", chatId.toString(), "chatid") == "11") {
+            if ("11".equals(db.searchByChatID(conn, "users", chatId.toString(), "chatid"))) {
                 String role;
                 message.setText("Введите имя");
                 execute(message);
@@ -109,12 +109,18 @@ public class telegramBotHandlers extends telegramBotConfigure {
         fsm.changeState("eventname");
         fsm.currentDB = "event";
         try {
+            String[] user_inform;
             String organizer = db.searchByChatID(conn, "users", chatId.toString(), "name");
             message.setText("Как называется Ваше мероприятие?");
             execute(message);
             db.insertRow(conn, "event", "organizer", "chatid", organizer, chatId.toString());
+            user_inform = db.viewRowUsers(conn, "users", "chatid", chatId.toString());
+            int new_countevent = (Integer.parseInt(user_inform[4])) + 1;
+            db.update(conn, "users", "countevent", String.valueOf(new_countevent), chatId.toString());
         } catch (TelegramApiException e) {
             e.printStackTrace();
+        } catch (InvalidDatabaseEntryException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -176,8 +182,8 @@ public class telegramBotHandlers extends telegramBotConfigure {
         message.setReplyMarkup(inlineKeyboardMarkup);
 
         try {
-            String[] eventRow = db.viewRowUsers(conn, "users", "chatid", chatId.toString());
-            message.setText(eventRow[1] + "\n\n" + "*Ваша роль:* " + eventRow[2] + "\n\n" + eventRow[3]);
+            String[] userRow = db.viewRowUsers(conn, "users", "chatid", chatId.toString());
+            message.setText(userRow[1] + "\n\n" + "*Вы:* " + userRow[2] + "\n\n" + "*Уровень:* " + userRow[4] + "\n\n" + userRow[3]);
             message.enableMarkdown(true);
             execute(message);
         } catch (TelegramApiException e) {
@@ -327,10 +333,15 @@ public class telegramBotHandlers extends telegramBotConfigure {
 
         db.deleteRow(conn, "event", currentEmpidCreated);
         try {
+            String[] user_inform = db.viewRowUsers(conn, "users", "chatid", chatId.toString());
+            int new_countevent = (Integer.parseInt(user_inform[4])) - 1;
+            db.update(conn, "users", "countevent", String.valueOf(new_countevent), chatId.toString());
             message.setText("Мероприятие успешно удалено!");
             execute(message);
         } catch (TelegramApiException e) {
             e.printStackTrace();
+        } catch (InvalidDatabaseEntryException e) {
+            throw new RuntimeException(e);
         }
 
     }
