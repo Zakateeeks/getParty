@@ -1,0 +1,325 @@
+{
+  "/help": {
+    "text": "*А вот список команд, которые бот умеет выполнять:*\n\n/help - Собственно, ты вызвал(а) сейчас эту команду. Она нужна, чтобы сориентировать тебя по тому, какие команды ещё есть в боте.\n\n/about - Благодаря этой команды ты можешь поподробнее узнать о способностях бота. Прописав эту команду, ты увидишь для чего создан этот бот, какие функции он выполняет и как с ним работать.\n\n/dev - Эта команда познакомит тебя с людьми, которые создали этого бота.",
+    "inlineButtons": false
+  },
+  "/dev": {
+    "text": "*Разработкой занимались:*\n•Дмитрий Свечников (Zakateeek)\n•Александр Цымбал (sanchezzzz300)\n•Виктор Комогоров (leeggler)",
+    "inlineButtons": false
+  },
+  "/about": {
+    "text": "TEXT ABOUT COMMAND",
+    "inlineButtons": false
+  },
+  "description$": {
+    "text": "А теперь расскажи о себе",
+    "inlineButtons": false
+  },
+  "eventdesc$": {
+    "text": "Расскажи о своем мероприятии",
+    "inlineButtons": false
+  },
+  "eventref$": {
+    "text": "Отправь ссылку на беседу мероприятия",
+    "inlineButtons": false
+  },
+  "eventdate$": {
+    "text": "Когда оно будет проходить (в формате дд.мм.гг чч:мм)?",
+    "inlineButtons": false
+  },
+  "complete$": {
+    "text": "Мероприятие создано",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 1,
+      "b1": {
+        "butText": "В меню",
+        "callBackData": "menu"
+      }
+    }
+  },
+  "/start": {
+    "text": "Привет!\n\nЭтот бот, создан для того, чтобы ты мог участвовать в различных крутых мероприятиях в своём городе!\nКроме того, ты можешь сам организовывать встречи и приглашать туда людей!\n\nНажми на кнопку регистрации, чтобы создать свой профиль и начать создавать или искать мероприятия в твоём городе!",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 1,
+      "b1": {
+        "butText": "Региcтрация",
+        "callBackData": "registration"
+      }
+    }
+  },
+  "registration": {
+    "text": "Давай начнем регистрацию\n\nТы хочешь больше участвовать в мероприятиях или организовывать их?",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "Участник",
+        "callBackData": "member"
+      },
+      "b2": {
+        "butText": "Организатор",
+        "callBackData": "organizer"
+      }
+    }
+  },
+  "menu$": {
+    "text": "Вы можете посмотреть мероприятия, создать своё или посмотреть свой профиль",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 3,
+      "b1": {
+        "butText": "Список",
+        "callBackData": "eventList"
+      },
+      "b2": {
+        "butText": "Профиль",
+        "callBackData": "viewProfile"
+      },
+      "b3": {
+        "butText": "Создать",
+        "callBackData": "createEvent"
+      }
+    }
+  },
+  "profile$": {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "Созданные",
+        "callBackData": "createdEventList"
+      },
+      "b2": {
+        "butText": "Записанные",
+        "callBackData": "signedEventList"
+      }
+    }
+  },
+  "incorrectInput$": {
+    "text": "Введите данные корректно",
+    "inlineButtons": false
+  },
+  "name$": {
+    "text": "Введите имя",
+    "inlineButtons": false
+  },
+  "eventname$": {
+    "text": "Как называется Ваше мероприятие?",
+    "inlineButtons": false
+  },
+  "first$": {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "Записаться",
+        "callBackData": "signUp"
+      },
+      "b2": {
+        "butText": "-->",
+        "callBackData": "empidPlus"
+      }
+    }
+  },
+  "last$": {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "<--",
+        "callBackData": "empidMinus"
+      },
+      "b2": {
+        "butText": "Записаться",
+        "callBackData": "signUp"
+      }
+    }
+  },
+  "midle$": {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 3,
+      "b1": {
+        "butText": "<--",
+        "callBackData": "empidMinus"
+      },
+      "b2": {
+        "butText": "Записаться",
+        "callBackData": "signUp"
+      },
+      "b3": {
+        "butText": "-->",
+        "callBackData": "empidPlus"
+      }
+    }
+  },
+  "firstMyEvent$": {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 4,
+      "b1": {
+        "butText": "Удалить",
+        "callBackData": "delEvent"
+      },
+      "b2": {
+        "butText": "Участники",
+        "callBackData": "viewMember"
+      },
+      "b3": {
+        "butText": "Рассылка",
+        "callBackData": "sendLetterMembers"
+      },
+      "b4": {
+        "butText": "->",
+        "callBackData": "nextElem"
+      }
+    }
+  },
+  "lastMyEvent$": {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 4,
+      "b1": {
+        "butText": "<-",
+        "callBackData": "prevElem"
+      },
+      "b2": {
+        "butText": "Удалить",
+        "callBackData": "delEvent"
+      },
+      "b3": {
+        "butText": "Участники",
+        "callBackData": "viewMember"
+      },
+      "b4": {
+        "butText": "Рассылка",
+        "callBackData": "sendLetterMembers"
+      }
+    }
+  },
+  "midleMyEvent$": {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 5,
+      "b1": {
+        "butText": "<-",
+        "callBackData": "prevElem"
+      },
+      "b2": {
+        "butText": "Удалить",
+        "callBackData": "delEvent"
+      },
+      "b3": {
+        "butText": "Участники",
+        "callBackData": "viewMember"
+      },
+      "b4": {
+        "butText": "Рассылка",
+        "callBackData": "sendLetterMembers"
+      },
+      "b5": {
+        "butText": "->",
+        "callBackData": "nextElem"
+      }
+    }
+  },
+  "oneMyEvent$": {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 3,
+      "b1": {
+        "butText": "Удалить",
+        "callBackData": "delEvent"
+      },
+      "b2": {
+        "butText": "Участники",
+        "callBackData": "viewMember"
+      },
+      "b3": {
+        "butText": "Рассылка",
+        "callBackData": "sendLetterMembers"
+      }
+    }
+  },
+  "singUp$": {
+    "text": "Вы успешно записаны!",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 1,
+      "b1": {
+        "butText": "В меню",
+        "callBackData": "menu"
+      }
+    }
+  },
+  "oneMember$": {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 1,
+      "b1": {
+        "butText": "Исключить",
+        "callBackData": "deleteMember"
+      }
+    }
+  },
+  "firstMember$": {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "Исключить",
+        "callBackData": "deleteMember"
+      },
+      "b2": {
+        "butText": "->",
+        "callBackData": "plusCounter"
+      }
+    }
+  },
+  "lastMember$": {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "<-",
+        "callBackData": "minusCounter"
+      },
+      "b2": {
+        "butText": "Исключить",
+        "callBackData": "deleteMember"
+      }
+    }
+  },
+  "midleMember$": {
+    "text": "",
+    "inlineButtons": true,
+    "buttons": {
+      "count": 2,
+      "b1": {
+        "butText": "<-",
+        "callBackData": "minusCounter"
+      },
+      "b2": {
+        "butText": "Исключить",
+        "callBackData": "deleteMember"
+      },
+      "b3": {
+        "butText": "->",
+        "callBackData": "plusCounter"
+      }
+    }
+  }
+}
